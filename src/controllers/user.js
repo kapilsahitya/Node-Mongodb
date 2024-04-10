@@ -32,7 +32,7 @@ exports.signup = async (req, res) => {
 			password,
 			phone,
 			email_verify_token: emailToken,
-			role: 'User',
+			role: 'Admin', // Change User once create api for admin role
 		};
 
 		// Using mongoose

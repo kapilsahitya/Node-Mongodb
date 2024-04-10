@@ -6,13 +6,18 @@ require('dotenv').config();
 exports.auth = (req, res, next) => {
 	try {
 		// extract JWT token
-		const token = req.body.token || req.cookies.token;
+		let token = req.header('Authorization');
 		if (!token) {
 			return res.status(401).json({
 				success: false,
 				message: 'Token Missing',
 			});
 		}
+
+		token = token.split(' ')[1]; // Remove Bearer from string
+
+		if (token === 'null' || !token)
+			return res.status(401).send('Unauthorized request');
 
 		// verify the token
 		try {

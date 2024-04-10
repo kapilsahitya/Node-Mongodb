@@ -25,6 +25,8 @@ require('./src/configs/mongodb').connect();
 // route importing and mounting
 const user = require('./src/routes/user');
 app.use('/api/v1/auth', user);
+const category = require('./src/routes/category');
+app.use('/api/v1/category', category);
 
 // test api
 app.get('/test', (req, res) => {

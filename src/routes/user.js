@@ -8,7 +8,6 @@ const {
 
 // Handlers from controllers
 const { login, signup, confirmation } = require('../controllers/user'); // API created using mongoose
-// const { login, signup, confirmation } = require("../controllers/prisma/auth"); // API created using prisma
 const { auth, isUser, isAdmin } = require('../middlewares/authMiddle');
 
 router.post('/login', loginRules, login);
@@ -22,6 +21,7 @@ router.get('/test', auth, (req, res) => {
 		message: 'You are a valid Tester.',
 	});
 });
+
 // protected routes
 router.get('/user', auth, isUser, (req, res) => {
 	res.json({
