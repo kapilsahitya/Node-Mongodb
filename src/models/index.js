@@ -3,5 +3,5 @@ const Category = require('./Category');
 
 module.exports = {
 	User,
-	Category
+	Category,
 };

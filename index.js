@@ -28,6 +28,9 @@ app.use('/api/v1/auth', user);
 const category = require('./src/routes/category');
 app.use('/api/v1/category', category);
 
+app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
+
 // test api
 app.get('/test', (req, res) => {
 	try {

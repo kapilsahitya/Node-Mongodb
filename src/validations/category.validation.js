@@ -24,5 +24,7 @@ const editRules = [
 		.withMessage('Name should be string'),
 ];
 
-const deleteRules = [param('id').customSanitizer((value) => new ObjectId(value))];
+const deleteRules = [
+	param('id').customSanitizer((value) => new ObjectId(value)),
+];
 module.exports = { addRules, editRules, deleteRules };

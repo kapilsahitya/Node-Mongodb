@@ -1,5 +1,4 @@
 const Category = require('../models/Category');
-const ObjectId = require('mongodb').ObjectId;
 const logger = require('../helpers/logger');
 const { validationResult } = require('express-validator');
 require('dotenv').config();
@@ -16,12 +15,24 @@ exports.add = async (req, res) => {
 			});
 		}
 
+		// check whether req.file contians the file
+		// if not multer is failed to parse so notify the client
+		if (!req.file) {
+			res.status(413).send(
+				`File not uploaded!, Please attach jpeg file under 5 MB`,
+			);
+			return;
+		}
+
 		// get input data
-		const { name } = req.body;
+		const { name, description } = req.body;
+		const image = req?.file?.filename;
 
 		// sending email for verification
 		const categoryData = {
 			name,
+			description,
+			image,
 		};
 
 		// Using mongoose
@@ -53,8 +64,17 @@ exports.edit = async (req, res) => {
 			});
 		}
 
+		// check whether req.file contians the file
+		// if not multer is failed to parse so notify the client
+		if (!req.file) {
+			res.status(413).send(
+				`File not uploaded!, Please attach jpeg file under 5 MB`,
+			);
+			return;
+		}
+
 		// get input data
-		const { name } = req.body;
+		const { name, description } = req.body;
 
 		const category = await Category.findOne({
 			$and: [
@@ -81,12 +101,17 @@ exports.edit = async (req, res) => {
 		// Using mongoose
 		const categoryInstance = await Category.findById(req.params.id);
 		categoryInstance.name = name;
+		categoryInstance.description = description;
+		if (req?.file?.filename) {
+			categoryInstance.image = req?.file?.filename;
+		}
 
 		const updateCategory = await categoryInstance.save();
 		if (updateCategory) {
 			return res.status(200).json({
 				success: true,
 				message: 'Category has been updated successfully',
+				data: { category: updateCategory },
 			});
 		} else {
 			return res.status(500).json({
@@ -116,7 +141,9 @@ exports.deleteCategory = async (req, res) => {
 		}
 
 		// Using mongoose
-		const categoryInstance = await Category.deleteOne({ _id: req.params.id });
+		const categoryInstance = await Category.deleteOne({
+			_id: req.params.id,
+		});
 
 		if (categoryInstance) {
 			return res.status(200).json({
