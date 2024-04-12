@@ -18,9 +18,9 @@ exports.add = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
 			return;
 		}
 
@@ -38,10 +38,21 @@ exports.add = async (req, res) => {
 		// Using mongoose
 		const categoryInstance = await Category.create(categoryData);
 
+		let tmpCat = {};
+		tmpCat = {
+			...updateCategory._doc,
+			image_url:
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/category/' +
+				categoryInstance.image,
+		};
+
 		return res.status(200).json({
 			success: true,
 			message: 'category created successfully.',
-			data: { category: categoryInstance },
+			data: { category: tmpCat },
 		});
 	} catch (error) {
 		logger.error(error);
@@ -67,9 +78,9 @@ exports.edit = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
 			return;
 		}
 
@@ -107,11 +118,22 @@ exports.edit = async (req, res) => {
 		}
 
 		const updateCategory = await categoryInstance.save();
+		let tmpCat = {};
+		tmpCat = {
+			...updateCategory._doc,
+			image_url:
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/category/' +
+				updateCategory.image,
+		};
+
 		if (updateCategory) {
 			return res.status(200).json({
 				success: true,
 				message: 'Category has been updated successfully',
-				data: { category: updateCategory },
+				data: { category: tmpCat },
 			});
 		} else {
 			return res.status(500).json({
@@ -180,9 +202,19 @@ exports.getAll = async (req, res) => {
 		// Using mongoose
 		const categories = await Category.find({});
 
-		const categoryMap = {};
+		let tmpCat = {};
+		let categoryMap = {};
 		categories.forEach((category) => {
-			categoryMap[category._id] = category;
+			tmpCat = {
+				...category._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/category/' +
+					category.image,
+			};
+			categoryMap[tmpCat._id] = tmpCat;
 		});
 
 		return res.status(200).json({
@@ -194,7 +226,7 @@ exports.getAll = async (req, res) => {
 		logger.error(error);
 		res.status(500).json({
 			success: false,
-			message: `Category Delete failed: ${error.message}`,
+			message: `Category List failed: ${error.message}`,
 		});
 	}
 };
