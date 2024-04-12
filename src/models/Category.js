@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const CategorySchema = new mongoose.Schema({
 	name: { type: String, required: true, default: '', trim: true },
 	description: { type: String, default: '' },
 	image: { type: String, default: '' },
@@ -9,4 +9,4 @@ const UserSchema = new mongoose.Schema({
 	updated_at: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Category', UserSchema);
+module.exports = mongoose.model('Category', CategorySchema);
