@@ -1,6 +1,8 @@
+const path = require('path');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const logger = require('../helpers/logger');
+const extract = require('extract-zip');
 const { validationResult } = require('express-validator');
 require('dotenv').config();
 
@@ -19,9 +21,9 @@ exports.add = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
 			return;
 		}
 
@@ -51,7 +53,7 @@ exports.add = async (req, res) => {
 
 		await Category.updateMany(
 			{ _id: productInstance.categories },
-			{ $push: { products: productInstance._id } },
+			{ $push: { products: productInstance._id } }
 		);
 
 		return res.status(200).json({
@@ -82,15 +84,14 @@ exports.edit = async (req, res) => {
 
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
-		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
-			return;
-		}
+		// if (!req.file) {
+		// 	res.status(413).send(
+		// 		`File not uploaded!, Please attach jpeg file under 5 MB`,
+		// 	);
+		// 	return;
+		// }
 
 		// get input data
-		const _id = req.params.id;
 		const { name, description, categories } = req.body;
 		const productData = {
 			name,
@@ -137,11 +138,11 @@ exports.edit = async (req, res) => {
 		const removed = difference(oldCategories, newCategories);
 		await Category.updateMany(
 			{ _id: added },
-			{ $addToSet: { products: newProduct._id } },
+			{ $addToSet: { products: newProduct._id } }
 		);
 		await Category.updateMany(
 			{ _id: removed },
-			{ $pull: { products: newProduct._id } },
+			{ $pull: { products: newProduct._id } }
 		);
 
 		let tmpCat = {};
@@ -197,7 +198,7 @@ exports.deleteProduct = async (req, res) => {
 
 		await Category.updateMany(
 			{ _id: product.categories },
-			{ $pull: { products: product._id } },
+			{ $pull: { products: product._id } }
 		);
 
 		if (productInstance) {
@@ -233,11 +234,11 @@ exports.getAll = async (req, res) => {
 		}
 
 		// Using mongoose
-		const categories = await Product.find({});
+		const products = await Product.find({});
 
 		let tmpCat = {};
 		let productMap = {};
-		categories.forEach((product) => {
+		products.forEach((product) => {
 			tmpCat = {
 				...product._doc,
 				image_url:
@@ -253,13 +254,78 @@ exports.getAll = async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			message: 'Product has been fetched successfully',
-			data: { categories: productMap },
+			data: { products: productMap },
 		});
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({
 			success: false,
 			message: `Product List failed: ${error.message}`,
+		});
+	}
+};
+
+exports.gameUpload = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+
+		// if there is error then return Error
+		if (!errors.isEmpty()) {
+			return res.status(403).json({
+				success: false,
+				errors: errors.array(),
+			});
+		}
+
+		// check whether req.file contians the file
+		// if not multer is failed to parse so notify the client
+		if (!req.file) {
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
+			return;
+		}
+
+		const gameDirectory = path.parse(req.file.filename).name;
+		console.log(
+			path.resolve(__dirname + '../../uploads/product/game/' + gameDirectory)
+		);
+		const fileExtracted = await extract(
+			__dirname + '../../../uploads/product/game/' + req.file.filename,
+			{
+				dir: path.resolve(
+					__dirname + '../../../uploads/product/game/' + gameDirectory
+				),
+			}
+		);
+
+		const oldProduct = await Product.findById(req.params.id);
+		if (req?.file?.filename) {
+			// oldProduct.game_path = req?.file?.filename;
+		}
+		const newProduct = await oldProduct.save();
+
+		let tmpCat = {};
+		tmpCat = {
+			...newProduct._doc,
+			image_url:
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/' +
+				newProduct.image,
+		};
+
+		return res.status(200).json({
+			success: true,
+			message: 'Game has been successfully uploaded.',
+			data: { category: tmpCat },
+		});
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({
+			success: false,
+			message: `Game Upload failed: ${error.message}`,
 		});
 	}
 };
