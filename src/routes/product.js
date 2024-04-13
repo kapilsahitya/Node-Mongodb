@@ -8,12 +8,7 @@ const {
 const product_image_upload = require('../helpers/product_image_upload');
 
 // Handlers from controllers
-const {
-	add,
-	edit,
-	deleteProduct,
-	getAll,
-} = require('../controllers/product'); // API created using mongoose
+const { add, edit, deleteProduct, getAll } = require('../controllers/product'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
 router.get('/all', auth, isAdmin, getAll);

@@ -19,9 +19,9 @@ exports.add = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res
-				.status(413)
-				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
+			res.status(413).send(
+				`File not uploaded!, Please attach jpeg file under 5 MB`,
+			);
 			return;
 		}
 
@@ -51,7 +51,7 @@ exports.add = async (req, res) => {
 
 		await Product.updateMany(
 			{ _id: categoryInstance.products },
-			{ $push: { categories: categoryInstance._id } }
+			{ $push: { categories: categoryInstance._id } },
 		);
 
 		return res.status(200).json({
@@ -83,9 +83,9 @@ exports.edit = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res
-				.status(413)
-				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
+			res.status(413).send(
+				`File not uploaded!, Please attach jpeg file under 5 MB`,
+			);
 			return;
 		}
 
@@ -97,7 +97,6 @@ exports.edit = async (req, res) => {
 			description,
 			products,
 		};
-
 
 		const category = await Category.findOne({
 			$and: [
@@ -138,11 +137,11 @@ exports.edit = async (req, res) => {
 		const removed = difference(oldProducts, newProducts);
 		await Product.updateMany(
 			{ _id: added },
-			{ $addToSet: { categories: newCategory._id } }
+			{ $addToSet: { categories: newCategory._id } },
 		);
 		await Product.updateMany(
 			{ _id: removed },
-			{ $pull: { categories: newCategory._id } }
+			{ $pull: { categories: newCategory._id } },
 		);
 
 		tmpCat = {
@@ -197,7 +196,7 @@ exports.deleteCategory = async (req, res) => {
 
 		await Product.updateMany(
 			{ _id: category.products },
-			{ $pull: { categories: category._id } }
+			{ $pull: { categories: category._id } },
 		);
 
 		if (categoryInstance) {
