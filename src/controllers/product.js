@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs-extra');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const logger = require('../helpers/logger');
@@ -287,21 +288,29 @@ exports.gameUpload = async (req, res) => {
 		}
 
 		const gameDirectory = path.parse(req.file.filename).name;
-		console.log(
-			path.resolve(__dirname + '../../uploads/product/game/' + gameDirectory)
-		);
-		const fileExtracted = await extract(
+		const gameDirectoryPath =
+			__dirname + '../../../uploads/product/game/' + gameDirectory;
+		await extract(
 			__dirname + '../../../uploads/product/game/' + req.file.filename,
 			{
-				dir: path.resolve(
-					__dirname + '../../../uploads/product/game/' + gameDirectory
-				),
+				dir: path.resolve(gameDirectoryPath),
 			}
 		);
+		fs.readdirSync(gameDirectoryPath).forEach((mainFile) => {
+			if (mainFile !== 'index.html') {
+				fs.readdirSync(gameDirectoryPath + '/' + mainFile).forEach((file) => {
+					fs.move(
+						gameDirectoryPath + '/' + mainFile + '/' + file,
+						gameDirectoryPath + '/' + file,
+						{ mkdirp: true }
+					);
+				});
+			}
+		});
 
 		const oldProduct = await Product.findById(req.params.id);
-		if (req?.file?.filename) {
-			// oldProduct.game_path = req?.file?.filename;
+		if (fs.existsSync(gameDirectoryPath)) {
+			oldProduct.game_path = gameDirectory;
 		}
 		const newProduct = await oldProduct.save();
 
@@ -315,6 +324,19 @@ exports.gameUpload = async (req, res) => {
 				'/uploads/product/' +
 				newProduct.image,
 		};
+		if (
+			fs.existsSync(
+				__dirname + '../../../uploads/product/game/' + newProduct.game_path
+			)
+		) {
+			tmpCat.game_path_url =
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/game/' +
+				newProduct.game_path +
+				'/index.html';
+		}
 
 		return res.status(200).json({
 			success: true,
