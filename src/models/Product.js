@@ -8,6 +8,7 @@ const ProductSchema = new mongoose.Schema({
 	active: { type: Boolean, default: true },
 	created_at: { type: Date, default: Date.now },
 	updated_at: { type: Date, default: Date.now },
+	categories: [{ type: mongoose.Types.ObjectId, ref: 'Category' }],
 });
 
 module.exports = mongoose.model('Product', ProductSchema);

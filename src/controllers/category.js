@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const Product = require('../models/Product');
 const logger = require('../helpers/logger');
 const { validationResult } = require('express-validator');
 require('dotenv').config();
@@ -18,21 +19,20 @@ exports.add = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
 			return;
 		}
 
 		// get input data
-		const { name, description } = req.body;
+		const { name, description, products } = req.body;
 		const image = req?.file?.filename;
-
-		// sending email for verification
 		const categoryData = {
 			name,
 			description,
 			image,
+			products,
 		};
 
 		// Using mongoose
@@ -40,7 +40,7 @@ exports.add = async (req, res) => {
 
 		let tmpCat = {};
 		tmpCat = {
-			...updateCategory._doc,
+			...categoryInstance._doc,
 			image_url:
 				req.protocol +
 				'://' +
@@ -48,6 +48,11 @@ exports.add = async (req, res) => {
 				'/uploads/category/' +
 				categoryInstance.image,
 		};
+
+		await Product.updateMany(
+			{ _id: categoryInstance.products },
+			{ $push: { categories: categoryInstance._id } }
+		);
 
 		return res.status(200).json({
 			success: true,
@@ -78,14 +83,21 @@ exports.edit = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
+			res
+				.status(413)
+				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
 			return;
 		}
 
 		// get input data
-		const { name, description } = req.body;
+		const _id = req.params.id;
+		const { name, description, products } = req.body;
+		const categoryData = {
+			name,
+			description,
+			products,
+		};
+
 
 		const category = await Category.findOne({
 			$and: [
@@ -109,27 +121,41 @@ exports.edit = async (req, res) => {
 			});
 		}
 
-		// Using mongoose
-		const categoryInstance = await Category.findById(req.params.id);
-		categoryInstance.name = name;
-		categoryInstance.description = description;
+		const newProducts = categoryData.products || [];
+
+		const oldCategory = await Category.findById(req.params.id);
+		const oldProducts = oldCategory.products;
+
+		Object.assign(oldCategory, categoryData);
+
 		if (req?.file?.filename) {
-			categoryInstance.image = req?.file?.filename;
+			oldCategory.image = req?.file?.filename;
 		}
 
-		const updateCategory = await categoryInstance.save();
-		let tmpCat = {};
+		const newCategory = await oldCategory.save();
+
+		const added = difference(newProducts, oldProducts);
+		const removed = difference(oldProducts, newProducts);
+		await Product.updateMany(
+			{ _id: added },
+			{ $addToSet: { categories: newCategory._id } }
+		);
+		await Product.updateMany(
+			{ _id: removed },
+			{ $pull: { categories: newCategory._id } }
+		);
+
 		tmpCat = {
-			...updateCategory._doc,
+			...newCategory._doc,
 			image_url:
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/category/' +
-				updateCategory.image,
+				newCategory.image,
 		};
 
-		if (updateCategory) {
+		if (newCategory) {
 			return res.status(200).json({
 				success: true,
 				message: 'Category has been updated successfully',
@@ -163,9 +189,16 @@ exports.deleteCategory = async (req, res) => {
 		}
 
 		// Using mongoose
+		const category = await Category.findOne({ _id: req.params.id });
+
 		const categoryInstance = await Category.deleteOne({
 			_id: req.params.id,
 		});
+
+		await Product.updateMany(
+			{ _id: category.products },
+			{ $pull: { categories: category._id } }
+		);
 
 		if (categoryInstance) {
 			return res.status(200).json({
@@ -230,3 +263,17 @@ exports.getAll = async (req, res) => {
 		});
 	}
 };
+
+function difference(A, B) {
+	const arrA = Array.isArray(A) ? A.map((x) => x.toString()) : [A.toString()];
+	const arrB = Array.isArray(B) ? B.map((x) => x.toString()) : [B.toString()];
+
+	const result = [];
+	for (const p of arrA) {
+		if (arrB.indexOf(p) === -1) {
+			result.push(p);
+		}
+	}
+
+	return result;
+}
