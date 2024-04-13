@@ -1,6 +1,4 @@
 const AdminBro = require('admin-bro');
 
-const options = {
-
-}
+const options = {};
 module.exports = options;

@@ -23,7 +23,7 @@ router.post(
 	auth,
 	isAdmin,
 	category_image_upload.single('image'),
-	addRules
+	addRules,
 );
 router.post(
 	'/edit/:id',
@@ -31,7 +31,7 @@ router.post(
 	isAdmin,
 	category_image_upload.single('image'),
 	editRules,
-	edit
+	edit,
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
 

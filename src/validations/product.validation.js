@@ -19,7 +19,9 @@ const editRules = [
 	param('id')
 		.customSanitizer((value) => new ObjectId(value))
 		.custom(async (value) => {
-			const product = await Models['Product'].findById(new ObjectId(value));
+			const product = await Models['Product'].findById(
+				new ObjectId(value),
+			);
 			if (!product) {
 				throw new Error('Invalid product id');
 			}
@@ -35,7 +37,9 @@ const deleteRules = [
 	param('id')
 		.customSanitizer((value) => new ObjectId(value))
 		.custom(async (value) => {
-			const product = await Models['Product'].findById(new ObjectId(value));
+			const product = await Models['Product'].findById(
+				new ObjectId(value),
+			);
 			if (!product) {
 				throw new Error('Invalid product id');
 			}
@@ -46,7 +50,9 @@ const gameUploadRules = [
 	param('id')
 		.customSanitizer((value) => new ObjectId(value))
 		.custom(async (value) => {
-			const product = await Models['Product'].findById(new ObjectId(value));
+			const product = await Models['Product'].findById(
+				new ObjectId(value),
+			);
 			if (!product) {
 				throw new Error('Invalid product id');
 			}
