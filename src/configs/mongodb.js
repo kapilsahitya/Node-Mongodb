@@ -14,3 +14,4 @@ exports.connect = () => {
 			process.exit(1);
 		});
 };
+// C:\Program Files\MongoDB\Server\7.0\bin

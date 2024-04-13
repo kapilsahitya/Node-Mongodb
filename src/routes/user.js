@@ -1,3 +1,6 @@
+
+const AdminBro = require('admin-bro');
+const {buildRouter} = require('admin-bro-expressjs');
 const express = require('express');
 const router = express.Router();
 const {
@@ -5,6 +8,11 @@ const {
 	loginRules,
 	confirmationRules,
 } = require('../validations/user.validation');
+
+const buildAdminRouter = (admin) => {
+	const router = buildRouter(admin);
+	return router;
+}
 
 // Handlers from controllers
 const { login, signup, confirmation } = require('../controllers/user'); // API created using mongoose
@@ -37,4 +45,5 @@ router.get('/admin', auth, isAdmin, (req, res) => {
 	});
 });
 
-module.exports = router;
+// module.exports = router;
+module.exports = buildAdminRouter;

@@ -1,4 +1,6 @@
 const express = require('express');
+const AdminBro = require('admin-bro');
+const options = require('./src/admin.options');
 const app = express();
 const logger = require('./src/helpers/logger');
 
@@ -19,6 +21,8 @@ app.use((req, res, next) => {
 	next();
 });
 
+const admin = new AdminBro(options);
+
 // calling database connection function
 require('./src/configs/mongodb').connect();
 
@@ -30,6 +34,9 @@ app.use('/api/v1/category', category);
 const product = require('./src/routes/product');
 app.use('/api/v1/product', product);
 
+const buildAdminRouter = require('./src/routes/user')
+const router = buildAdminRouter(admin);
+app.use(admin.options.rootPath, router);
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
 

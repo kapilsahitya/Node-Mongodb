@@ -16,7 +16,8 @@ const {
 } = require('../controllers/category'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
-router.get('/all', auth, isAdmin, getAll);
+// router.get('/all', auth, isAdmin, getAll);
+router.get('/all', getAll);
 router.post(
 	'/add',
 	auth,

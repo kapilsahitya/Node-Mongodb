@@ -235,7 +235,7 @@ exports.getAll = async (req, res) => {
 		const categories = await Category.find({});
 
 		let tmpCat = {};
-		let categoryMap = {};
+		let categoryMap = [];
 		categories.forEach((category) => {
 			tmpCat = {
 				...category._doc,
