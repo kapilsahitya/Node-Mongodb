@@ -44,5 +44,5 @@ router.get('/admin', auth, isAdmin, (req, res) => {
 	});
 });
 
-// module.exports = router;
-module.exports = buildAdminRouter;
+module.exports = router;
+// module.exports = buildAdminRouter;
