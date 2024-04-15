@@ -38,7 +38,7 @@ exports.add = async (req, res) => {
 		// create object for returning
 		let tmpPrd = {};
 		let tmpCat = {};
-		let categoryMap = {};
+		let categoryMap = [];
 		tmpPrd = {
 			...productInstance._doc,
 			image_url:
@@ -73,7 +73,7 @@ exports.add = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
-			categoryMap[tmpCat._id] = tmpCat;
+			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
 
@@ -168,7 +168,7 @@ exports.edit = async (req, res) => {
 		// create object for returning
 		let tmpPrd = {};
 		let tmpCat = {};
-		let categoryMap = {};
+		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
 			image_url:
@@ -203,7 +203,8 @@ exports.edit = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
-			categoryMap[tmpCat._id] = tmpCat;
+
+			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
 
@@ -290,10 +291,10 @@ exports.getAll = async (req, res) => {
 		// create object for returning
 		let tmpCat = {};
 		let tmpPrd = {};
-		let productMap = {};
-		let categoryMap = {};
+		let productMap = [];
+		let categoryMap = [];
 		products.forEach((product) => {
-			categoryMap = {};
+			categoryMap = [];
 			tmpPrd = {
 				...product._doc,
 				image_url:
@@ -330,10 +331,12 @@ exports.getAll = async (req, res) => {
 						'/uploads/category/' +
 						category.image,
 				};
-				categoryMap[tmpCat._id] = tmpCat;
+
+				categoryMap.push(tmpCat);
 			});
 			tmpPrd.categories = categoryMap;
-			productMap[tmpPrd._id] = tmpPrd;
+
+			productMap.push(tmpPrd);
 		});
 
 		return res.status(200).json({
@@ -406,7 +409,7 @@ exports.gameUpload = async (req, res) => {
 		// create object for returning
 		let tmpPrd = {};
 		let tmpCat = {};
-		let categoryMap = {};
+		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
 			image_url:
@@ -442,7 +445,7 @@ exports.gameUpload = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
-			categoryMap[tmpCat._id] = tmpCat;
+			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
 
@@ -479,7 +482,7 @@ exports.getById = async (req, res) => {
 		// create object for returning
 		let tmpPrd = {};
 		let tmpCat = {};
-		let categoryMap = {};
+		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
 			image_url:
@@ -514,7 +517,7 @@ exports.getById = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
-			categoryMap[tmpCat._id] = tmpCat;
+			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
 

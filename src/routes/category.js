@@ -13,6 +13,7 @@ const {
 	edit,
 	deleteCategory,
 	getAll,
+	getById,
 } = require('../controllers/category'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
@@ -39,5 +40,6 @@ router.post(
 	edit,
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
+router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
 
 module.exports = router;
