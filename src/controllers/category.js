@@ -18,12 +18,12 @@ exports.add = async (req, res) => {
 
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
-		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
-			return;
-		}
+		// if (!req.file) {
+		// 	res.status(413).send(
+		// 		`File not uploaded!, Please attach jpeg file under 5 MB`,
+		// 	);
+		// 	return;
+		// }
 
 		// get input data
 		const { name, description, products } = req.body;
@@ -233,6 +233,7 @@ exports.getAll = async (req, res) => {
 
 		// Using mongoose
 		const categories = await Category.find({});
+		// console.log("categories", categories)
 
 		let tmpCat = {};
 		let categoryMap = [];
@@ -246,7 +247,8 @@ exports.getAll = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
-			categoryMap[tmpCat._id] = tmpCat;
+			// categoryMap[tmpCat._id] = tmpCat;
+			categoryMap.push(tmpCat)
 		});
 
 		return res.status(200).json({
