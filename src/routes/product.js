@@ -16,6 +16,7 @@ const {
 	deleteProduct,
 	getAll,
 	gameUpload,
+	getById,
 } = require('../controllers/product'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
@@ -26,7 +27,7 @@ router.post(
 	isAdmin,
 	product_image_upload.single('image'),
 	addRules,
-	add,
+	add
 );
 router.post(
 	'/edit/:id',
@@ -34,15 +35,16 @@ router.post(
 	isAdmin,
 	product_image_upload.single('image'),
 	editRules,
-	edit,
+	edit
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteProduct);
+router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
 
 router.post(
 	'/gameUpload/:id',
 	gameUploadRules,
 	game_upload.single('game_file'),
-	gameUpload,
+	gameUpload
 );
 
 module.exports = router;
