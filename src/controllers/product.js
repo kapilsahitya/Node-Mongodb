@@ -238,7 +238,7 @@ exports.getAll = async (req, res) => {
 		const products = await Product.find({});
 
 		let tmpCat = {};
-		let productMap = {};
+		let productMap = [];
 		products.forEach((product) => {
 			tmpCat = {
 				...product._doc,
@@ -249,7 +249,8 @@ exports.getAll = async (req, res) => {
 					'/uploads/product/' +
 					product.image,
 			};
-			productMap[tmpCat._id] = tmpCat;
+			// productMap[tmpCat._id] = tmpCat;
+			productMap.push(tmpCat)
 		});
 
 		return res.status(200).json({

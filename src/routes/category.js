@@ -32,6 +32,7 @@ router.post(
 	'/add',
 	category_image_upload.single('image'),
 	addRules,
+	add,
 );
 
 router.post(

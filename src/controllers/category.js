@@ -232,7 +232,7 @@ exports.getAll = async (req, res) => {
 		}
 
 		// Using mongoose
-		const categories = await Category.find({});
+		const categories = await Category.find({}).sort({"name":1});
 		// console.log("categories", categories)
 
 		let tmpCat = {};
