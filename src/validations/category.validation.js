@@ -16,7 +16,16 @@ const addRules = [
 ];
 
 const editRules = [
-	param('id').customSanitizer((value) => new ObjectId(value)),
+	param('id')
+		.customSanitizer((value) => new ObjectId(value))
+		.custom(async (value) => {
+			const category = await Models['Category'].findById(
+				new ObjectId(value),
+			);
+			if (!category) {
+				throw new Error('Invalid category id');
+			}
+		}),
 	body('name')
 		.exists({ checkFalsy: true })
 		.withMessage('Name is required')
@@ -25,6 +34,15 @@ const editRules = [
 ];
 
 const deleteRules = [
-	param('id').customSanitizer((value) => new ObjectId(value)),
+	param('id')
+		.customSanitizer((value) => new ObjectId(value))
+		.custom(async (value) => {
+			const category = await Models['Category'].findById(
+				new ObjectId(value),
+			);
+			if (!category) {
+				throw new Error('Invalid category id');
+			}
+		}),
 ];
 module.exports = { addRules, editRules, deleteRules };

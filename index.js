@@ -34,7 +34,7 @@ app.use('/api/v1/category', category);
 const product = require('./src/routes/product');
 app.use('/api/v1/product', product);
 
-const buildAdminRouter = require('./src/routes/user')
+const buildAdminRouter = require('./src/routes/user');
 const router = buildAdminRouter(admin);
 app.use(admin.options.rootPath, router);
 app.use(express.static(__dirname + '/public'));
