@@ -28,11 +28,7 @@ router.post(
 	add,
 );
 
-router.post(
-	'/add',
-	category_image_upload.single('image'),
-	addRules,
-);
+router.post('/add', category_image_upload.single('image'), addRules);
 
 router.post(
 	'/edit/:id',

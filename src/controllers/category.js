@@ -248,7 +248,7 @@ exports.getAll = async (req, res) => {
 					category.image,
 			};
 			// categoryMap[tmpCat._id] = tmpCat;
-			categoryMap.push(tmpCat)
+			categoryMap.push(tmpCat);
 		});
 
 		return res.status(200).json({
