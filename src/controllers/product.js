@@ -19,15 +19,6 @@ exports.add = async (req, res) => {
 			});
 		}
 
-		// check whether req.file contians the file
-		// if not multer is failed to parse so notify the client
-		if (!req.file) {
-			res.status(413).send(
-				`File not uploaded!, Please attach jpeg file under 5 MB`,
-			);
-			return;
-		}
-
 		// get input data
 		const { name, description, categories } = req.body;
 		const image = req?.file?.filename;
@@ -38,11 +29,17 @@ exports.add = async (req, res) => {
 			categories,
 		};
 
-		// Using mongoose
-		const productInstance = await Product.create(productData);
+		// Model Action Handeler
+		const product = await Product.create(productData);
+		const productInstance = await Product.findById(product._id).populate(
+			'categories',
+		);
 
+		// create object for returning
+		let tmpPrd = {};
 		let tmpCat = {};
-		tmpCat = {
+		let categoryMap = [];
+		tmpPrd = {
 			...productInstance._doc,
 			image_url:
 				req.protocol +
@@ -51,6 +48,34 @@ exports.add = async (req, res) => {
 				'/uploads/product/' +
 				productInstance.image,
 		};
+		if (
+			tmpPrd.game_path !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+			)
+		) {
+			tmpPrd.game_path_url =
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/game/' +
+				tmpPrd.game_path +
+				'/index.html';
+		}
+
+		tmpPrd.categories.forEach((category) => {
+			tmpCat = {
+				...category._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/category/' +
+					category.image,
+			};
+			categoryMap.push(tmpCat);
+		});
+		tmpPrd.categories = categoryMap;
 
 		await Category.updateMany(
 			{ _id: productInstance.categories },
@@ -60,7 +85,7 @@ exports.add = async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			message: 'product created successfully.',
-			data: { product: tmpCat },
+			data: { product: tmpPrd },
 		});
 	} catch (error) {
 		logger.error(error);
@@ -82,15 +107,6 @@ exports.edit = async (req, res) => {
 				errors: errors.array(),
 			});
 		}
-
-		// check whether req.file contians the file
-		// if not multer is failed to parse so notify the client
-		// if (!req.file) {
-		// 	res.status(413).send(
-		// 		`File not uploaded!, Please attach jpeg file under 5 MB`,
-		// 	);
-		// 	return;
-		// }
 
 		// get input data
 		const { name, description, categories } = req.body;
@@ -133,7 +149,10 @@ exports.edit = async (req, res) => {
 			oldProduct.image = req?.file?.filename;
 		}
 
-		const newProduct = await oldProduct.save();
+		const saveProduct = await oldProduct.save();
+		const newProduct = await Product.findById(saveProduct._id).populate(
+			'categories',
+		);
 
 		const added = difference(newCategories, oldCategories);
 		const removed = difference(oldCategories, newCategories);
@@ -146,8 +165,11 @@ exports.edit = async (req, res) => {
 			{ $pull: { products: newProduct._id } },
 		);
 
+		// create object for returning
+		let tmpPrd = {};
 		let tmpCat = {};
-		tmpCat = {
+		let categoryMap = [];
+		tmpPrd = {
 			...newProduct._doc,
 			image_url:
 				req.protocol +
@@ -156,12 +178,41 @@ exports.edit = async (req, res) => {
 				'/uploads/product/' +
 				newProduct.image,
 		};
+		if (
+			tmpPrd.game_path !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+			)
+		) {
+			tmpPrd.game_path_url =
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/game/' +
+				tmpPrd.game_path +
+				'/index.html';
+		}
+
+		tmpPrd.categories.forEach((category) => {
+			tmpCat = {
+				...category._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/category/' +
+					category.image,
+			};
+
+			categoryMap.push(tmpCat);
+		});
+		tmpPrd.categories = categoryMap;
 
 		if (newProduct) {
 			return res.status(200).json({
 				success: true,
 				message: 'Product has been updated successfully',
-				data: { product: tmpCat },
+				data: { product: tmpPrd },
 			});
 		} else {
 			return res.status(500).json({
@@ -190,7 +241,7 @@ exports.deleteProduct = async (req, res) => {
 			});
 		}
 
-		// Using mongoose
+		// Model Action Handeler
 		const product = await Product.findOne({ _id: req.params.id });
 
 		const productInstance = await Product.deleteOne({
@@ -234,13 +285,17 @@ exports.getAll = async (req, res) => {
 			});
 		}
 
-		// Using mongoose
-		const products = await Product.find({});
+		// Model Action Handeler
+		const products = await Product.find({}).populate('categories');
 
+		// create object for returning
 		let tmpCat = {};
+		let tmpPrd = {};
 		let productMap = [];
+		let categoryMap = [];
 		products.forEach((product) => {
-			tmpCat = {
+			categoryMap = [];
+			tmpPrd = {
 				...product._doc,
 				image_url:
 					req.protocol +
@@ -249,8 +304,39 @@ exports.getAll = async (req, res) => {
 					'/uploads/product/' +
 					product.image,
 			};
-			// productMap[tmpCat._id] = tmpCat;
-			productMap.push(tmpCat);
+
+			if (
+				tmpPrd.game_path !== '' &&
+				fs.existsSync(
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
+				)
+			) {
+				tmpPrd.game_path_url =
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/game/' +
+					tmpPrd.game_path +
+					'/index.html';
+			}
+			tmpPrd.categories.forEach((category) => {
+				tmpCat = {
+					...category._doc,
+					image_url:
+						req.protocol +
+						'://' +
+						req.get('host') +
+						'/uploads/category/' +
+						category.image,
+				};
+
+				categoryMap.push(tmpCat);
+			});
+			tmpPrd.categories = categoryMap;
+
+			productMap.push(tmpPrd);
 		});
 
 		return res.status(200).json({
@@ -315,10 +401,16 @@ exports.gameUpload = async (req, res) => {
 		if (fs.existsSync(gameDirectoryPath)) {
 			oldProduct.game_path = gameDirectory;
 		}
-		const newProduct = await oldProduct.save();
+		await oldProduct.save();
+		const newProduct = await Product.findById(req.params.id).populate(
+			'categories',
+		);
 
+		// create object for returning
+		let tmpPrd = {};
 		let tmpCat = {};
-		tmpCat = {
+		let categoryMap = [];
+		tmpPrd = {
 			...newProduct._doc,
 			image_url:
 				req.protocol +
@@ -334,7 +426,7 @@ exports.gameUpload = async (req, res) => {
 					newProduct.game_path,
 			)
 		) {
-			tmpCat.game_path_url =
+			tmpPrd.game_path_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
@@ -343,16 +435,109 @@ exports.gameUpload = async (req, res) => {
 				'/index.html';
 		}
 
+		tmpPrd.categories.forEach((category) => {
+			tmpCat = {
+				...category._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/category/' +
+					category.image,
+			};
+			categoryMap.push(tmpCat);
+		});
+		tmpPrd.categories = categoryMap;
+
 		return res.status(200).json({
 			success: true,
 			message: 'Game has been successfully uploaded.',
-			data: { category: tmpCat },
+			data: { product: tmpPrd },
 		});
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({
 			success: false,
 			message: `Game Upload failed: ${error.message}`,
+		});
+	}
+};
+
+exports.getById = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+
+		// if there is error then return Error
+		if (!errors.isEmpty()) {
+			return res.status(403).json({
+				success: false,
+				errors: errors.array(),
+			});
+		}
+
+		const newProduct = await Product.findById(req.params.id).populate(
+			'categories',
+		);
+
+		// create object for returning
+		let tmpPrd = {};
+		let tmpCat = {};
+		let categoryMap = [];
+		tmpPrd = {
+			...newProduct._doc,
+			image_url:
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/' +
+				newProduct.image,
+		};
+		if (
+			tmpPrd.game_path !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+			)
+		) {
+			tmpPrd.game_path_url =
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/product/game/' +
+				tmpPrd.game_path +
+				'/index.html';
+		}
+
+		tmpPrd.categories.forEach((category) => {
+			tmpCat = {
+				...category._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/category/' +
+					category.image,
+			};
+			categoryMap.push(tmpCat);
+		});
+		tmpPrd.categories = categoryMap;
+
+		if (newProduct) {
+			return res.status(200).json({
+				success: true,
+				message: 'Product has been fetched successfully',
+				data: { product: tmpPrd },
+			});
+		} else {
+			return res.status(500).json({
+				success: false,
+				message: 'Unable to fetch product',
+			});
+		}
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({
+			success: false,
+			message: `Product Get by Id failed: ${error.message}`,
 		});
 	}
 };

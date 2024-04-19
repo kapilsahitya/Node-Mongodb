@@ -13,22 +13,21 @@ const {
 	edit,
 	deleteCategory,
 	getAll,
+	getById,
 } = require('../controllers/category'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
 // router.get('/all', auth, isAdmin, getAll);
 router.get('/all', getAll);
 
-// router.post(
-// 	'/add',
-// 	auth,
-// 	isAdmin,
-// 	category_image_upload.single('image'),
-// 	addRules,
-// 	add,
-// );
-
-router.post('/add', category_image_upload.single('image'), addRules, add);
+router.post(
+	'/add',
+	auth,
+	isAdmin,
+	category_image_upload.single('image'),
+	addRules,
+	add,
+);
 
 router.post(
 	'/edit/:id',
@@ -39,5 +38,6 @@ router.post(
 	edit,
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
+router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
 
 module.exports = router;

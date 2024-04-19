@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs-extra');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const logger = require('../helpers/logger');
@@ -16,15 +18,6 @@ exports.add = async (req, res) => {
 			});
 		}
 
-		// check whether req.file contians the file
-		// if not multer is failed to parse so notify the client
-		// if (!req.file) {
-		// 	res.status(413).send(
-		// 		`File not uploaded!, Please attach jpeg file under 5 MB`,
-		// 	);
-		// 	return;
-		// }
-
 		// get input data
 		const { name, description, products } = req.body;
 		const image = req?.file?.filename;
@@ -35,10 +28,16 @@ exports.add = async (req, res) => {
 			products,
 		};
 
-		// Using mongoose
-		const categoryInstance = await Category.create(categoryData);
+		// Model Action Handeler
+		const category = await Category.create(categoryData);
+		const categoryInstance = await Category.findById(category._id).populate(
+			'products',
+		);
 
+		// create object for returning
+		let tmpPrd = {};
 		let tmpCat = {};
+		let productMap = [];
 		tmpCat = {
 			...categoryInstance._doc,
 			image_url:
@@ -48,6 +47,37 @@ exports.add = async (req, res) => {
 				'/uploads/category/' +
 				categoryInstance.image,
 		};
+		tmpCat.products.forEach((product) => {
+			tmpPrd = {
+				...product._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/' +
+					product.image,
+			};
+
+			if (
+				tmpPrd.game_path !== '' &&
+				fs.existsSync(
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
+				)
+			) {
+				tmpPrd.game_path_url =
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/game/' +
+					tmpPrd.game_path +
+					'/index.html';
+			}
+
+			productMap.push(tmpPrd);
+		});
+		tmpCat.products = productMap;
 
 		await Product.updateMany(
 			{ _id: categoryInstance.products },
@@ -80,17 +110,7 @@ exports.edit = async (req, res) => {
 			});
 		}
 
-		// check whether req.file contians the file
-		// if not multer is failed to parse so notify the client
-		// if (!req.file) {
-		// 	res.status(413).send(
-		// 		`File not uploaded!, Please attach jpeg file under 5 MB`,
-		// 	);
-		// 	return;
-		// }
-
 		// get input data
-		const _id = req.params.id;
 		const { name, description, products } = req.body;
 		const categoryData = {
 			name,
@@ -131,7 +151,10 @@ exports.edit = async (req, res) => {
 			oldCategory.image = req?.file?.filename;
 		}
 
-		const newCategory = await oldCategory.save();
+		const saveCategory = await oldCategory.save();
+		const newCategory = await Category.findById(saveCategory._id).populate(
+			'products',
+		);
 
 		const added = difference(newProducts, oldProducts);
 		const removed = difference(oldProducts, newProducts);
@@ -144,6 +167,10 @@ exports.edit = async (req, res) => {
 			{ $pull: { categories: newCategory._id } },
 		);
 
+		// create object for returning
+		let tmpPrd = {};
+		let tmpCat = {};
+		let productMap = [];
 		tmpCat = {
 			...newCategory._doc,
 			image_url:
@@ -153,6 +180,37 @@ exports.edit = async (req, res) => {
 				'/uploads/category/' +
 				newCategory.image,
 		};
+		tmpCat.products.forEach((product) => {
+			tmpPrd = {
+				...product._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/' +
+					product.image,
+			};
+
+			if (
+				tmpPrd.game_path !== '' &&
+				fs.existsSync(
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
+				)
+			) {
+				tmpPrd.game_path_url =
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/game/' +
+					tmpPrd.game_path +
+					'/index.html';
+			}
+
+			productMap.push(tmpPrd);
+		});
+		tmpCat.products = productMap;
 
 		if (newCategory) {
 			return res.status(200).json({
@@ -187,7 +245,7 @@ exports.deleteCategory = async (req, res) => {
 			});
 		}
 
-		// Using mongoose
+		// Model Action Handeler
 		const category = await Category.findOne({ _id: req.params.id });
 
 		const categoryInstance = await Category.deleteOne({
@@ -231,13 +289,16 @@ exports.getAll = async (req, res) => {
 			});
 		}
 
-		// Using mongoose
-		const categories = await Category.find({}).sort({ name: 1 });
-		// console.log("categories", categories)
+		// Model Action Handeler
+		const categories = await Category.find({}).sort({ name: 1 }).populate('products');
 
+		// create object for returning
+		let tmpPrd = {};
 		let tmpCat = {};
+		let productMap = [];
 		let categoryMap = [];
 		categories.forEach((category) => {
+			productMap = [];
 			tmpCat = {
 				...category._doc,
 				image_url:
@@ -247,6 +308,38 @@ exports.getAll = async (req, res) => {
 					'/uploads/category/' +
 					category.image,
 			};
+
+			tmpCat.products.forEach((product) => {
+				tmpPrd = {
+					...product._doc,
+					image_url:
+						req.protocol +
+						'://' +
+						req.get('host') +
+						'/uploads/product/' +
+						product.image,
+				};
+
+				if (
+					tmpPrd.game_path !== '' &&
+					fs.existsSync(
+						__dirname +
+							'../../../uploads/product/game/' +
+							tmpPrd.game_path,
+					)
+				) {
+					tmpPrd.game_path_url =
+						req.protocol +
+						'://' +
+						req.get('host') +
+						'/uploads/product/game/' +
+						tmpPrd.game_path +
+						'/index.html';
+				}
+
+				productMap.push(tmpPrd);
+			});
+			tmpCat.products = productMap;
 			// categoryMap[tmpCat._id] = tmpCat;
 			categoryMap.push(tmpCat);
 		});
@@ -261,6 +354,89 @@ exports.getAll = async (req, res) => {
 		res.status(500).json({
 			success: false,
 			message: `Category List failed: ${error.message}`,
+		});
+	}
+};
+
+exports.getById = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+
+		// if there is error then return Error
+		if (!errors.isEmpty()) {
+			return res.status(403).json({
+				success: false,
+				errors: errors.array(),
+			});
+		}
+
+		// Model Action Handeler
+		const category = await Category.findById(req.params.id).populate(
+			'products',
+		);
+
+		// create object for returning
+		let tmpPrd = {};
+		let tmpCat = {};
+		let productMap = [];
+		tmpCat = {
+			...category._doc,
+			image_url:
+				req.protocol +
+				'://' +
+				req.get('host') +
+				'/uploads/category/' +
+				category.image,
+		};
+		tmpCat.products.forEach((product) => {
+			productMap = [];
+			tmpPrd = {
+				...product._doc,
+				image_url:
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/' +
+					product.image,
+			};
+
+			if (
+				tmpPrd.game_path !== '' &&
+				fs.existsSync(
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
+				)
+			) {
+				tmpPrd.game_path_url =
+					req.protocol +
+					'://' +
+					req.get('host') +
+					'/uploads/product/game/' +
+					tmpPrd.game_path +
+					'/index.html';
+			}
+			productMap.push(tmpPrd);
+		});
+		tmpCat.products = productMap;
+
+		if (category) {
+			return res.status(200).json({
+				success: true,
+				message: 'Category has been fetched successfully',
+				data: { category: tmpCat },
+			});
+		} else {
+			return res.status(500).json({
+				success: false,
+				message: 'Unable to fetch category',
+			});
+		}
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({
+			success: false,
+			message: `Category Get by Id failed: ${error.message}`,
 		});
 	}
 };
