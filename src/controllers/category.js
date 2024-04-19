@@ -232,7 +232,7 @@ exports.getAll = async (req, res) => {
 		}
 
 		// Using mongoose
-		const categories = await Category.find({}).sort({"name":1});
+		const categories = await Category.find({}).sort({ name: 1 });
 		// console.log("categories", categories)
 
 		let tmpCat = {};
@@ -248,7 +248,7 @@ exports.getAll = async (req, res) => {
 					category.image,
 			};
 			// categoryMap[tmpCat._id] = tmpCat;
-			categoryMap.push(tmpCat)
+			categoryMap.push(tmpCat);
 		});
 
 		return res.status(200).json({

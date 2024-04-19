@@ -250,7 +250,7 @@ exports.getAll = async (req, res) => {
 					product.image,
 			};
 			// productMap[tmpCat._id] = tmpCat;
-			productMap.push(tmpCat)
+			productMap.push(tmpCat);
 		});
 
 		return res.status(200).json({

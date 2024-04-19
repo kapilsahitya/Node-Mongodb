@@ -31,12 +31,7 @@ router.get('/all', getAll);
 // 	add,
 // );
 
-router.post(
-	'/add',
-	product_image_upload.single('image'),
-	addRules,
-	add,
-);
+router.post('/add', product_image_upload.single('image'), addRules, add);
 
 router.post(
 	'/edit/:id',
