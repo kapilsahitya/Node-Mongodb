@@ -51,7 +51,7 @@ exports.add = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -181,7 +181,7 @@ exports.edit = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -376,9 +376,9 @@ exports.gameUpload = async (req, res) => {
 
 		const gameDirectory = path.parse(req.file.filename).name;
 		const gameDirectoryPath =
-			__dirname + '../../../uploads/product/game/' + gameDirectory;
+			__dirname + '/../../uploads/product/game/' + gameDirectory;
 		await extract(
-			__dirname + '../../../uploads/product/game/' + req.file.filename,
+			__dirname + '/../../uploads/product/game/' + req.file.filename,
 			{
 				dir: path.resolve(gameDirectoryPath),
 			},
@@ -495,7 +495,7 @@ exports.getById = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
