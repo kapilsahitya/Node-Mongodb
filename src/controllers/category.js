@@ -290,7 +290,7 @@ exports.getAll = async (req, res) => {
 		}
 
 		// Model Action Handeler
-		const categories = await Category.find({}).populate('products');
+		const categories = await Category.find({}).sort({ name: 1 }).populate('products');
 
 		// create object for returning
 		let tmpPrd = {};
