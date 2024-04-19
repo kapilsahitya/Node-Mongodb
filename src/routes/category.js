@@ -20,10 +20,17 @@ const { auth, isAdmin } = require('../middlewares/authMiddle');
 // router.get('/all', auth, isAdmin, getAll);
 router.get('/all', getAll);
 
+// router.post(
+// 	'/add',
+// 	auth,
+// 	isAdmin,
+// 	category_image_upload.single('image'),
+// 	addRules,
+// 	add,
+// );
+
 router.post(
 	'/add',
-	auth,
-	isAdmin,
 	category_image_upload.single('image'),
 	addRules,
 	add,

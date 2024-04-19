@@ -20,15 +20,24 @@ const {
 } = require('../controllers/product'); // API created using mongoose
 const { auth, isAdmin } = require('../middlewares/authMiddle');
 
-router.get('/all', auth, isAdmin, getAll);
+// router.get('/all', auth, isAdmin, getAll);
+router.get('/all', getAll);
+// router.post(
+// 	'/add',
+// 	auth,
+// 	isAdmin,
+// 	product_image_upload.single('image'),
+// 	addRules,
+// 	add,
+// );
+
 router.post(
 	'/add',
-	auth,
-	isAdmin,
 	product_image_upload.single('image'),
 	addRules,
 	add,
 );
+
 router.post(
 	'/edit/:id',
 	auth,
@@ -38,7 +47,8 @@ router.post(
 	edit,
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteProduct);
-router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+// router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+router.get('/getById/:id',  deleteRules, getById);
 
 router.post(
 	'/gameUpload/:id',
