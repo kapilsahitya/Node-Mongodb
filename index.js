@@ -3,6 +3,7 @@ const AdminBro = require('admin-bro');
 const options = require('./src/admin.options');
 const app = express();
 const logger = require('./src/helpers/logger');
+const cors = require('cors')
 
 require('dotenv').config();
 const PORT = process.env.PORT || 4000;
@@ -21,6 +22,14 @@ app.use((req, res, next) => {
 	);
 	next();
 });
+
+// const corsOptions = { 
+// 	// origin:'https://abc.onrender.com',
+// 	AccessControlAllowOrigin: '*',  
+// 	origin: '*',  
+// 	methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' 
+//   }
+// app.use(cors(corsOptions))
 
 const admin = new AdminBro(options);
 

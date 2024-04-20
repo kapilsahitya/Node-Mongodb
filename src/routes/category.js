@@ -36,14 +36,22 @@ router.post(
 	add,
 );
 
+// router.post(
+// 	'/edit/:id',
+// 	auth,
+// 	isAdmin,
+// 	category_image_upload.single('image'),
+// 	editRules,
+// 	edit,
+// );
+
 router.post(
 	'/edit/:id',
-	auth,
-	isAdmin,
 	category_image_upload.single('image'),
 	editRules,
 	edit,
 );
+
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
 router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
 
