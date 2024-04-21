@@ -32,7 +32,7 @@ exports.add = async (req, res) => {
 		// Model Action Handeler
 		const product = await Product.create(productData);
 		const productInstance = await Product.findById(product._id).populate(
-			'categories'
+			'categories',
 		);
 
 		// create object for returning
@@ -46,7 +46,7 @@ exports.add = async (req, res) => {
 		if (
 			productInstance.image !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/' + productInstance.image
+				__dirname + '../../../uploads/product/' + productInstance.image,
 			)
 		) {
 			tmpCat.image_url =
@@ -59,7 +59,7 @@ exports.add = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -78,7 +78,9 @@ exports.add = async (req, res) => {
 			};
 			if (
 				category.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -93,7 +95,7 @@ exports.add = async (req, res) => {
 
 		await Category.updateMany(
 			{ _id: productInstance.categories },
-			{ $push: { products: productInstance._id } }
+			{ $push: { products: productInstance._id } },
 		);
 
 		return res.status(200).json({
@@ -165,18 +167,18 @@ exports.edit = async (req, res) => {
 
 		const saveProduct = await oldProduct.save();
 		const newProduct = await Product.findById(saveProduct._id).populate(
-			'categories'
+			'categories',
 		);
 
 		const added = difference(newCategories, oldCategories);
 		const removed = difference(oldCategories, newCategories);
 		await Category.updateMany(
 			{ _id: added },
-			{ $addToSet: { products: newProduct._id } }
+			{ $addToSet: { products: newProduct._id } },
 		);
 		await Category.updateMany(
 			{ _id: removed },
-			{ $pull: { products: newProduct._id } }
+			{ $pull: { products: newProduct._id } },
 		);
 
 		// create object for returning
@@ -189,7 +191,9 @@ exports.edit = async (req, res) => {
 		};
 		if (
 			newProduct.image !== '' &&
-			fs.existsSync(__dirname + '../../../uploads/product/' + newProduct.image)
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + newProduct.image,
+			)
 		) {
 			tmpCat.image_url =
 				req.protocol +
@@ -201,7 +205,7 @@ exports.edit = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -221,7 +225,9 @@ exports.edit = async (req, res) => {
 
 			if (
 				category.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -276,7 +282,7 @@ exports.deleteProduct = async (req, res) => {
 
 		await Category.updateMany(
 			{ _id: product.categories },
-			{ $pull: { products: product._id } }
+			{ $pull: { products: product._id } },
 		);
 
 		if (productInstance) {
@@ -327,7 +333,9 @@ exports.getAll = async (req, res) => {
 			};
 			if (
 				product.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -340,7 +348,9 @@ exports.getAll = async (req, res) => {
 			if (
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/product/game/' + tmpPrd.game_path
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -359,7 +369,9 @@ exports.getAll = async (req, res) => {
 				if (
 					category.image !== '' &&
 					fs.existsSync(
-						__dirname + '../../../uploads/category/' + category.image
+						__dirname +
+							'../../../uploads/category/' +
+							category.image,
 					)
 				) {
 					tmpCat.image_url =
@@ -406,9 +418,9 @@ exports.gameUpload = async (req, res) => {
 		// check whether req.file contians the file
 		// if not multer is failed to parse so notify the client
 		if (!req.file) {
-			res
-				.status(413)
-				.send(`File not uploaded!, Please attach jpeg file under 5 MB`);
+			res.status(413).send(
+				`File not uploaded!, Please attach jpeg file under 5 MB`,
+			);
 			return;
 		}
 
@@ -419,17 +431,19 @@ exports.gameUpload = async (req, res) => {
 			__dirname + '/../../uploads/product/game/' + req.file.filename,
 			{
 				dir: path.resolve(gameDirectoryPath),
-			}
+			},
 		);
 		fs.readdirSync(gameDirectoryPath).forEach((mainFile) => {
 			if (mainFile !== 'index.html') {
-				fs.readdirSync(gameDirectoryPath + '/' + mainFile).forEach((file) => {
-					fs.move(
-						gameDirectoryPath + '/' + mainFile + '/' + file,
-						gameDirectoryPath + '/' + file,
-						{ mkdirp: true }
-					);
-				});
+				fs.readdirSync(gameDirectoryPath + '/' + mainFile).forEach(
+					(file) => {
+						fs.move(
+							gameDirectoryPath + '/' + mainFile + '/' + file,
+							gameDirectoryPath + '/' + file,
+							{ mkdirp: true },
+						);
+					},
+				);
 			}
 		});
 
@@ -439,7 +453,7 @@ exports.gameUpload = async (req, res) => {
 		}
 		await oldProduct.save();
 		const newProduct = await Product.findById(req.params.id).populate(
-			'categories'
+			'categories',
 		);
 
 		// create object for returning
@@ -452,7 +466,9 @@ exports.gameUpload = async (req, res) => {
 		};
 		if (
 			newProduct.image !== '' &&
-			fs.existsSync(__dirname + '../../../uploads/product/' + newProduct.image)
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + newProduct.image,
+			)
 		) {
 			tmpCat.image_url =
 				req.protocol +
@@ -463,7 +479,9 @@ exports.gameUpload = async (req, res) => {
 		}
 		if (
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + newProduct.game_path
+				__dirname +
+					'../../../uploads/product/game/' +
+					newProduct.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -482,7 +500,9 @@ exports.gameUpload = async (req, res) => {
 			};
 			if (
 				category.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -522,7 +542,7 @@ exports.getById = async (req, res) => {
 		}
 
 		const newProduct = await Product.findById(req.params.id).populate(
-			'categories'
+			'categories',
 		);
 
 		// create object for returning
@@ -535,7 +555,9 @@ exports.getById = async (req, res) => {
 		};
 		if (
 			newProduct.image !== '' &&
-			fs.existsSync(__dirname + '../../../uploads/product/' + newProduct.image)
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + newProduct.image,
+			)
 		) {
 			tmpCat.image_url =
 				req.protocol +
@@ -547,7 +569,7 @@ exports.getById = async (req, res) => {
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -566,7 +588,9 @@ exports.getById = async (req, res) => {
 			};
 			if (
 				category.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +

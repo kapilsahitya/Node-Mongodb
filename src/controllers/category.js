@@ -31,7 +31,7 @@ exports.add = async (req, res) => {
 		// Model Action Handeler
 		const category = await Category.create(categoryData);
 		const categoryInstance = await Category.findById(category._id).populate(
-			'products'
+			'products',
 		);
 
 		// create object for returning
@@ -45,7 +45,9 @@ exports.add = async (req, res) => {
 		if (
 			categoryInstance.image !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/category/' + categoryInstance.image
+				__dirname +
+					'../../../uploads/category/' +
+					categoryInstance.image,
 			)
 		) {
 			tmpCat.image_url =
@@ -62,7 +64,9 @@ exports.add = async (req, res) => {
 			};
 			if (
 				product.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -75,7 +79,9 @@ exports.add = async (req, res) => {
 			if (
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/product/game/' + tmpPrd.game_path
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -93,7 +99,7 @@ exports.add = async (req, res) => {
 
 		await Product.updateMany(
 			{ _id: categoryInstance.products },
-			{ $push: { categories: categoryInstance._id } }
+			{ $push: { categories: categoryInstance._id } },
 		);
 
 		return res.status(200).json({
@@ -165,18 +171,18 @@ exports.edit = async (req, res) => {
 
 		const saveCategory = await oldCategory.save();
 		const newCategory = await Category.findById(saveCategory._id).populate(
-			'products'
+			'products',
 		);
 
 		const added = difference(newProducts, oldProducts);
 		const removed = difference(oldProducts, newProducts);
 		await Product.updateMany(
 			{ _id: added },
-			{ $addToSet: { categories: newCategory._id } }
+			{ $addToSet: { categories: newCategory._id } },
 		);
 		await Product.updateMany(
 			{ _id: removed },
-			{ $pull: { categories: newCategory._id } }
+			{ $pull: { categories: newCategory._id } },
 		);
 
 		// create object for returning
@@ -190,7 +196,7 @@ exports.edit = async (req, res) => {
 		if (
 			newCategory.image !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/category/' + newCategory.image
+				__dirname + '../../../uploads/category/' + newCategory.image,
 			)
 		) {
 			tmpCat.image_url =
@@ -207,7 +213,9 @@ exports.edit = async (req, res) => {
 			};
 			if (
 				product.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -220,7 +228,9 @@ exports.edit = async (req, res) => {
 			if (
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/product/game/' + tmpPrd.game_path
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -278,7 +288,7 @@ exports.deleteCategory = async (req, res) => {
 
 		await Product.updateMany(
 			{ _id: category.products },
-			{ $pull: { categories: category._id } }
+			{ $pull: { categories: category._id } },
 		);
 
 		if (categoryInstance) {
@@ -331,7 +341,9 @@ exports.getAll = async (req, res) => {
 			};
 			if (
 				category.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -348,7 +360,9 @@ exports.getAll = async (req, res) => {
 				};
 				if (
 					product.image !== '' &&
-					fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+					fs.existsSync(
+						__dirname + '../../../uploads/product/' + product.image,
+					)
 				) {
 					tmpCat.image_url =
 						req.protocol +
@@ -361,7 +375,9 @@ exports.getAll = async (req, res) => {
 				if (
 					tmpPrd.game_path !== '' &&
 					fs.existsSync(
-						__dirname + '../../../uploads/product/game/' + tmpPrd.game_path
+						__dirname +
+							'../../../uploads/product/game/' +
+							tmpPrd.game_path,
 					)
 				) {
 					tmpPrd.game_path_url =
@@ -408,7 +424,7 @@ exports.getById = async (req, res) => {
 
 		// Model Action Handeler
 		const category = await Category.findById(req.params.id).populate(
-			'products'
+			'products',
 		);
 
 		// create object for returning
@@ -421,7 +437,9 @@ exports.getById = async (req, res) => {
 		};
 		if (
 			category.image !== '' &&
-			fs.existsSync(__dirname + '../../../uploads/category/' + category.image)
+			fs.existsSync(
+				__dirname + '../../../uploads/category/' + category.image,
+			)
 		) {
 			tmpCat.image_url =
 				req.protocol +
@@ -438,7 +456,9 @@ exports.getById = async (req, res) => {
 			};
 			if (
 				product.image !== '' &&
-				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
 			) {
 				tmpCat.image_url =
 					req.protocol +
@@ -451,7 +471,9 @@ exports.getById = async (req, res) => {
 			if (
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/product/game/' + tmpPrd.game_path
+					__dirname +
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
