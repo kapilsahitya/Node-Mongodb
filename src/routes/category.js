@@ -29,12 +29,7 @@ router.get('/all', getAll);
 // 	add,
 // );
 
-router.post(
-	'/add',
-	category_image_upload.single('image'),
-	addRules,
-	add,
-);
+router.post('/add', category_image_upload.single('image'), addRules, add);
 
 // router.post(
 // 	'/edit/:id',
@@ -53,6 +48,6 @@ router.post(
 );
 
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
-router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+router.get('/getById/:id', deleteRules, getById);
 
 module.exports = router;

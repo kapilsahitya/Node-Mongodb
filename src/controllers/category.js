@@ -40,23 +40,41 @@ exports.add = async (req, res) => {
 		let productMap = [];
 		tmpCat = {
 			...categoryInstance._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			categoryInstance.image !== '' &&
+			fs.existsSync(
+				__dirname +
+					'../../../uploads/category/' +
+					categoryInstance.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/category/' +
-				categoryInstance.image,
-		};
+				categoryInstance.image;
+		}
 		tmpCat.products.forEach((product) => {
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
@@ -173,23 +191,39 @@ exports.edit = async (req, res) => {
 		let productMap = [];
 		tmpCat = {
 			...newCategory._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			newCategory.image !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/category/' + newCategory.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/category/' +
-				newCategory.image,
-		};
+				newCategory.image;
+		}
 		tmpCat.products.forEach((product) => {
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
@@ -290,7 +324,9 @@ exports.getAll = async (req, res) => {
 		}
 
 		// Model Action Handeler
-		const categories = await Category.find({}).sort({ name: 1 }).populate('products');
+		const categories = await Category.find({})
+			.sort({ name: 1 })
+			.populate('products');
 
 		// create object for returning
 		let tmpPrd = {};
@@ -301,24 +337,40 @@ exports.getAll = async (req, res) => {
 			productMap = [];
 			tmpCat = {
 				...category._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				category.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/category/' +
-					category.image,
-			};
+					category.image;
+			}
 
 			tmpCat.products.forEach((product) => {
 				tmpPrd = {
 					...product._doc,
-					image_url:
+					image_url: '',
+				};
+				if (
+					product.image !== '' &&
+					fs.existsSync(
+						__dirname + '../../../uploads/product/' + product.image,
+					)
+				) {
+					tmpCat.image_url =
 						req.protocol +
 						'://' +
 						req.get('host') +
 						'/uploads/product/' +
-						product.image,
-				};
+						product.image;
+				}
 
 				if (
 					tmpPrd.game_path !== '' &&
@@ -381,24 +433,40 @@ exports.getById = async (req, res) => {
 		let productMap = [];
 		tmpCat = {
 			...category._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			category.image !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/category/' + category.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/category/' +
-				category.image,
-		};
+				category.image;
+		}
 		tmpCat.products.forEach((product) => {
 			productMap = [];
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/product/' + product.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
