@@ -364,7 +364,7 @@ exports.getAll = async (req, res) => {
 						__dirname + '../../../uploads/product/' + product.image,
 					)
 				) {
-					tmpCat.image_url =
+					tmpPrd.image_url =
 						req.protocol +
 						'://' +
 						req.get('host') +
