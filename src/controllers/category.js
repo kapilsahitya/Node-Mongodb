@@ -58,13 +58,19 @@ exports.add = async (req, res) => {
 		tmpCat.products.forEach((product) => {
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
@@ -197,13 +203,19 @@ exports.edit = async (req, res) => {
 		tmpCat.products.forEach((product) => {
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
@@ -332,13 +344,19 @@ exports.getAll = async (req, res) => {
 			tmpCat.products.forEach((product) => {
 				tmpPrd = {
 					...product._doc,
-					image_url:
+					image_url: '',
+				};
+				if (
+					product.image !== '' &&
+					fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+				) {
+					tmpCat.image_url =
 						req.protocol +
 						'://' +
 						req.get('host') +
 						'/uploads/product/' +
-						product.image,
-				};
+						product.image;
+				}
 
 				if (
 					tmpPrd.game_path !== '' &&
@@ -416,13 +434,19 @@ exports.getById = async (req, res) => {
 			productMap = [];
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(__dirname + '../../../uploads/product/' + product.image)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
