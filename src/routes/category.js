@@ -53,6 +53,6 @@ router.post(
 );
 
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteCategory);
-router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+router.get('/getById/:id', deleteRules, getById);
 
 module.exports = router;
