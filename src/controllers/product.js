@@ -334,7 +334,7 @@ exports.getAll = async (req, res) => {
 			if (
 				product.image !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/product/' + product.image,
+					__dirname + '/../../uploads/product/' + product.image,
 				)
 			) {
 				tmpPrd.image_url =
@@ -349,7 +349,7 @@ exports.getAll = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-						'../../../uploads/product/game/' +
+						'/../../uploads/product/game/' +
 						tmpPrd.game_path,
 				)
 			) {
@@ -370,7 +370,7 @@ exports.getAll = async (req, res) => {
 					category.image !== '' &&
 					fs.existsSync(
 						__dirname +
-							'../../../uploads/category/' +
+							'/../../uploads/category/' +
 							category.image,
 					)
 				) {
