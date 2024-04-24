@@ -556,10 +556,10 @@ exports.getById = async (req, res) => {
 		if (
 			newProduct.image !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/' + newProduct.image,
+				__dirname + '/../../uploads/product/' + newProduct.image,
 			)
 		) {
-			tmpCat.image_url =
+			tmpPrd.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
@@ -589,7 +589,7 @@ exports.getById = async (req, res) => {
 			if (
 				category.image !== '' &&
 				fs.existsSync(
-					__dirname + '../../../uploads/category/' + category.image,
+					__dirname + '/../../uploads/category/' + category.image,
 				)
 			) {
 				tmpCat.image_url =
