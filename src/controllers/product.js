@@ -369,9 +369,7 @@ exports.getAll = async (req, res) => {
 				if (
 					category.image !== '' &&
 					fs.existsSync(
-						__dirname +
-							'/../../uploads/category/' +
-							category.image,
+						__dirname + '/../../uploads/category/' + category.image,
 					)
 				) {
 					tmpCat.image_url =
