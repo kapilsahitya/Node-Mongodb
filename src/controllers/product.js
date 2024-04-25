@@ -41,17 +41,25 @@ exports.add = async (req, res) => {
 		let categoryMap = [];
 		tmpPrd = {
 			...productInstance._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			productInstance.image !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + productInstance.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/product/' +
-				productInstance.image,
-		};
+				productInstance.image;
+		}
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -66,13 +74,21 @@ exports.add = async (req, res) => {
 		tmpPrd.categories.forEach((category) => {
 			tmpCat = {
 				...category._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				category.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/category/' +
-					category.image,
-			};
+					category.image;
+			}
 			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
@@ -171,17 +187,25 @@ exports.edit = async (req, res) => {
 		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			newProduct.image !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + newProduct.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/product/' +
-				newProduct.image,
-		};
+				newProduct.image;
+		}
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -196,14 +220,22 @@ exports.edit = async (req, res) => {
 		tmpPrd.categories.forEach((category) => {
 			tmpCat = {
 				...category._doc,
-				image_url:
+				image_url: '',
+			};
+
+			if (
+				category.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/category/' +
-					category.image,
-			};
-
+					category.image;
+			}
 			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
@@ -297,19 +329,27 @@ exports.getAll = async (req, res) => {
 			categoryMap = [];
 			tmpPrd = {
 				...product._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				product.image !== '' &&
+				fs.existsSync(
+					__dirname + '/../../uploads/product/' + product.image,
+				)
+			) {
+				tmpPrd.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/product/' +
-					product.image,
-			};
+					product.image;
+			}
 
 			if (
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-						'../../../uploads/product/game/' +
+						'/../../uploads/product/game/' +
 						tmpPrd.game_path,
 				)
 			) {
@@ -324,13 +364,21 @@ exports.getAll = async (req, res) => {
 			tmpPrd.categories.forEach((category) => {
 				tmpCat = {
 					...category._doc,
-					image_url:
+					image_url: '',
+				};
+				if (
+					category.image !== '' &&
+					fs.existsSync(
+						__dirname + '/../../uploads/category/' + category.image,
+					)
+				) {
+					tmpCat.image_url =
 						req.protocol +
 						'://' +
 						req.get('host') +
 						'/uploads/category/' +
-						category.image,
-				};
+						category.image;
+				}
 
 				categoryMap.push(tmpCat);
 			});
@@ -376,9 +424,9 @@ exports.gameUpload = async (req, res) => {
 
 		const gameDirectory = path.parse(req.file.filename).name;
 		const gameDirectoryPath =
-			__dirname + '../../../uploads/product/game/' + gameDirectory;
+			__dirname + '/../../uploads/product/game/' + gameDirectory;
 		await extract(
-			__dirname + '../../../uploads/product/game/' + req.file.filename,
+			__dirname + '/../../uploads/product/game/' + req.file.filename,
 			{
 				dir: path.resolve(gameDirectoryPath),
 			},
@@ -412,13 +460,21 @@ exports.gameUpload = async (req, res) => {
 		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			newProduct.image !== '' &&
+			fs.existsSync(
+				__dirname + '../../../uploads/product/' + newProduct.image,
+			)
+		) {
+			tmpCat.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/product/' +
-				newProduct.image,
-		};
+				newProduct.image;
+		}
 		if (
 			fs.existsSync(
 				__dirname +
@@ -438,13 +494,21 @@ exports.gameUpload = async (req, res) => {
 		tmpPrd.categories.forEach((category) => {
 			tmpCat = {
 				...category._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				category.image !== '' &&
+				fs.existsSync(
+					__dirname + '../../../uploads/category/' + category.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/category/' +
-					category.image,
-			};
+					category.image;
+			}
 			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;
@@ -485,17 +549,25 @@ exports.getById = async (req, res) => {
 		let categoryMap = [];
 		tmpPrd = {
 			...newProduct._doc,
-			image_url:
+			image_url: '',
+		};
+		if (
+			newProduct.image !== '' &&
+			fs.existsSync(
+				__dirname + '/../../uploads/product/' + newProduct.image,
+			)
+		) {
+			tmpPrd.image_url =
 				req.protocol +
 				'://' +
 				req.get('host') +
 				'/uploads/product/' +
-				newProduct.image,
-		};
+				newProduct.image;
+		}
 		if (
 			tmpPrd.game_path !== '' &&
 			fs.existsSync(
-				__dirname + '../../../uploads/product/game/' + tmpPrd.game_path,
+				__dirname + '/../../uploads/product/game/' + tmpPrd.game_path,
 			)
 		) {
 			tmpPrd.game_path_url =
@@ -510,13 +582,21 @@ exports.getById = async (req, res) => {
 		tmpPrd.categories.forEach((category) => {
 			tmpCat = {
 				...category._doc,
-				image_url:
+				image_url: '',
+			};
+			if (
+				category.image !== '' &&
+				fs.existsSync(
+					__dirname + '/../../uploads/category/' + category.image,
+				)
+			) {
+				tmpCat.image_url =
 					req.protocol +
 					'://' +
 					req.get('host') +
 					'/uploads/category/' +
-					category.image,
-			};
+					category.image;
+			}
 			categoryMap.push(tmpCat);
 		});
 		tmpPrd.categories = categoryMap;

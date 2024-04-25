@@ -22,7 +22,6 @@ const { auth, isAdmin } = require('../middlewares/authMiddle');
 
 // router.get('/all', auth, isAdmin, getAll);
 router.get('/all', getAll);
-
 // router.post(
 // 	'/add',
 // 	auth,
@@ -43,7 +42,8 @@ router.post(
 	edit,
 );
 router.delete('/delete/:id', auth, isAdmin, deleteRules, deleteProduct);
-router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+// router.get('/getById/:id', auth, isAdmin, deleteRules, getById);
+router.get('/getById/:id', deleteRules, getById);
 
 router.post(
 	'/gameUpload/:id',
