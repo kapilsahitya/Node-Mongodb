@@ -24,9 +24,7 @@ export const editRules = [
 	param('id')
 		.customSanitizer((value) => new ObjectId(value))
 		.custom(async (value) => {
-			const category = await Category.findById(
-				new ObjectId(value),
-			);
+			const category = await Category.findById(new ObjectId(value));
 			if (!category) {
 				throw new Error('Invalid category id');
 			}
@@ -42,9 +40,7 @@ export const deleteRules = [
 	param('id')
 		.customSanitizer((value) => new ObjectId(value))
 		.custom(async (value) => {
-			const category = await Category.findById(
-				new ObjectId(value),
-			);
+			const category = await Category.findById(new ObjectId(value));
 			if (!category) {
 				throw new Error('Invalid category id');
 			}

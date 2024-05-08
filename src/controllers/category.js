@@ -12,6 +12,10 @@ import logger from '../helpers/logger.js';
 import { validationResult } from 'express-validator';
 // require('dotenv').config();
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
 export const add = async (req, res) => {
 	try {
 		const errors = validationResult(req);
@@ -52,8 +56,8 @@ export const add = async (req, res) => {
 			categoryInstance.image !== '' &&
 			fs.existsSync(
 				__dirname +
-				'../../../uploads/category/' +
-				categoryInstance.image,
+					'../../../uploads/category/' +
+					categoryInstance.image,
 			)
 		) {
 			tmpCat.image_url =
@@ -86,8 +90,8 @@ export const add = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-					'../../../uploads/product/game/' +
-					tmpPrd.game_path,
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -164,10 +168,10 @@ export const edit = async (req, res) => {
 			});
 		}
 
-		const newProducts = categoryData.products || [];
-
 		const oldCategory = await Category.findById(req.params.id);
 		const oldProducts = oldCategory.products;
+		const newProducts = categoryData.products || oldCategory.products;
+		categoryData.products = newProducts;
 
 		Object.assign(oldCategory, categoryData);
 
@@ -235,8 +239,8 @@ export const edit = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-					'../../../uploads/product/game/' +
-					tmpPrd.game_path,
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -382,8 +386,8 @@ export const getAll = async (req, res) => {
 					tmpPrd.game_path !== '' &&
 					fs.existsSync(
 						__dirname +
-						'/../../uploads/product/game/' +
-						tmpPrd.game_path,
+							'/../../uploads/product/game/' +
+							tmpPrd.game_path,
 					)
 				) {
 					tmpPrd.game_path_url =
@@ -478,8 +482,8 @@ export const getById = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-					'../../../uploads/product/game/' +
-					tmpPrd.game_path,
+						'../../../uploads/product/game/' +
+						tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =

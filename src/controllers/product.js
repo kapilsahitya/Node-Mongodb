@@ -1,13 +1,23 @@
-const path = require('path');
-const fs = require('fs-extra');
-const Product = require('../models/Product');
-const Category = require('../models/Category');
-const logger = require('../helpers/logger');
-const extract = require('extract-zip');
-const { validationResult } = require('express-validator');
-require('dotenv').config();
+// const path = require('path');
+// const fs = require('fs-extra');
+// const Product = require('../models/Product');
+// const Category = require('../models/Category');
+// const logger = require('../helpers/logger');
+// const extract = require('extract-zip');
+// const { validationResult } = require('express-validator');
+// require('dotenv').config();
 
-exports.add = async (req, res) => {
+import path from 'path';
+import fs from 'fs-extra';
+import { Category } from '../models/Category.js';
+import { Product } from '../models/Product.js';
+import logger from '../helpers/logger.js';
+import { validationResult } from 'express-validator';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
+export const add = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -112,7 +122,7 @@ exports.add = async (req, res) => {
 	}
 };
 
-exports.edit = async (req, res) => {
+export const edit = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -154,10 +164,10 @@ exports.edit = async (req, res) => {
 			});
 		}
 
-		const newCategories = productData.categories || [];
-
 		const oldProduct = await Product.findById(req.params.id);
 		const oldCategories = oldProduct.categories;
+		const newCategories = productData.categories || oldProduct.categories;
+		productData.categories = newCategories;
 
 		Object.assign(oldProduct, productData);
 
@@ -261,7 +271,7 @@ exports.edit = async (req, res) => {
 	}
 };
 
-exports.deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -305,7 +315,7 @@ exports.deleteProduct = async (req, res) => {
 	}
 };
 
-exports.getAll = async (req, res) => {
+export const getAll = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -401,7 +411,7 @@ exports.getAll = async (req, res) => {
 	}
 };
 
-exports.gameUpload = async (req, res) => {
+export const gameUpload = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -527,7 +537,7 @@ exports.gameUpload = async (req, res) => {
 	}
 };
 
-exports.getById = async (req, res) => {
+export const getById = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 

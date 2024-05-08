@@ -6,7 +6,11 @@ const router = express.Router();
 // 	editRules,
 // 	deleteRules,
 // } = require('../validations/category.validation');
-import { addRules, editRules, deleteRules } from '../validations/category.validation.js'
+import {
+	addRules,
+	editRules,
+	deleteRules,
+} from '../validations/category.validation.js';
 // const category_image_upload = require('../helpers/category_image_upload');
 import { category_image_upload } from '../helpers/category_image_upload.js';
 
@@ -18,7 +22,13 @@ import { category_image_upload } from '../helpers/category_image_upload.js';
 // 	getAll,
 // 	getById,
 // } = require('../controllers/category'); // API created using mongoose
-import { add, edit, deleteCategory, getAll, getById } from '../controllers/category.js';
+import {
+	add,
+	edit,
+	deleteCategory,
+	getAll,
+	getById,
+} from '../controllers/category.js';
 // const { auth, isAdmin } = require('../middlewares/authMiddle');
 import { auth, isAdmin } from '../middlewares/authMiddle.js';
 
