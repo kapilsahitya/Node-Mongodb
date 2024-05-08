@@ -10,6 +10,7 @@ import cors from 'cors';
 import category from './src/routes/category.js';
 import product from './src/routes/product.js';
 import { Category } from './src/models/Category.js';
+import { Product } from './src/models/Product.js';
 // require('dotenv').config();
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -53,6 +54,9 @@ const start = async () => {
 			{
 				resource: Category,
 			},
+			{
+				resource: Product,
+			}
 		],
 	});
 
