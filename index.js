@@ -1,27 +1,89 @@
-const express = require('express');
-const AdminBro = require('admin-bro');
-const options = require('./src/admin.options');
-const app = express();
-const logger = require('./src/helpers/logger');
-const cors = require('cors');
-
-require('dotenv').config();
+import AdminJS from 'adminjs';
+import express from 'express';
+import AdminJSExpress from '@adminjs/express'
+import { Database, Resource } from '@adminjs/mongoose';
+// import options from './src/admin.options';
+// import { info } from './src/helpers/logger';
+// import logger from './src/helpers/logger';
+import cors from 'cors';
+// import user from './src/routes/user.js';
+import category from './src/routes/category.js';
+// import product from './src/routes/product.js';
+import { Category } from './src/models/Category.js';
+// require('dotenv').config();
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+dotenv.config();
 const PORT = process.env.PORT || 4000;
+import path from 'node:path'
+import { fileURLToPath } from 'url';
 
-// json
-app.use(express.json());
-app.enable('trust proxy');
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
-// cors
-app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-	res.setHeader(
-		'Access-Control-Allow-Headers',
-		'Content-Type, Authorization',
+AdminJS.registerAdapter({
+	Database,
+	Resource
+})
+
+const start = async () => {
+	const app = express();
+
+	// json
+	app.use(express.json());
+	app.enable('trust proxy');
+
+	// cors
+	app.use((req, res, next) => {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+		res.setHeader(
+			'Access-Control-Allow-Headers',
+			'Content-Type, Authorization',
+		);
+		next();
+	});
+	await mongoose
+		.connect(process.env.DATABASE_URL, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		})
+
+	const admin = new AdminJS({
+		resources: [
+			{
+				resource: Category
+			}
+		]
+	}
 	);
-	next();
-});
+
+	const adminRouter = AdminJSExpress.buildRouter(admin)
+	app.use(admin.options.rootPath, adminRouter)
+
+	// calling database connection function
+	// require('./src/configs/mongodb').connect();
+
+	// app.use('/api/v1/auth', user);
+	app.use('/api/v1/category', category);
+	// app.use('/api/v1/product', product);
+	app.use(express.static(__dirname + '/public'));
+	app.use('/uploads', express.static('uploads'));
+
+	app.get('/test', (req, res) => {
+		try {
+			res.status(200).json({ message: 'API is working' });
+		} catch (error) {
+			res.status(500).json({ message: error.message });
+		}
+	});
+
+	app.listen(PORT, () => {
+		console.log('Server Started');
+	});
+}
+
+start();
 
 // const corsOptions = {
 // 	// origin:'https://abc.onrender.com',
@@ -31,34 +93,7 @@ app.use((req, res, next) => {
 //   }
 // app.use(cors(corsOptions))
 
-const admin = new AdminBro(options);
 
-// calling database connection function
-require('./src/configs/mongodb').connect();
 
-// route importing and mounting
-const user = require('./src/routes/user');
-app.use('/api/v1/auth', user);
-const category = require('./src/routes/category');
-app.use('/api/v1/category', category);
-const product = require('./src/routes/product');
-app.use('/api/v1/product', product);
 
-// const buildAdminRouter = require('./src/routes/user');
-// const router = buildAdminRouter(admin);
-// app.use(admin.options.rootPath, router);
-app.use(express.static(__dirname + '/public'));
-app.use('/uploads', express.static('uploads'));
 
-// test api
-app.get('/test', (req, res) => {
-	try {
-		res.status(200).json({ message: 'API is working' });
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
-});
-
-app.listen(PORT, () => {
-	logger.info('Server Started');
-});

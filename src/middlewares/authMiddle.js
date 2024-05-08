@@ -1,9 +1,10 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+// const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken'
+// require('dotenv').config();
 
 // auth, isUser, isAdmin
 
-exports.auth = (req, res, next) => {
+export const auth = (req, res, next) => {
 	try {
 		// extract JWT token
 		let token = req.header('Authorization');
@@ -39,7 +40,7 @@ exports.auth = (req, res, next) => {
 	}
 };
 
-exports.isUser = (req, res, next) => {
+export const isUser = (req, res, next) => {
 	try {
 		if (req.user.role !== 'User') {
 			return res.status(401).json({
@@ -57,7 +58,7 @@ exports.isUser = (req, res, next) => {
 	}
 };
 
-exports.isAdmin = (req, res, next) => {
+export const isAdmin = (req, res, next) => {
 	try {
 		if (req.user.role !== 'Admin') {
 			return res.status(401).json({
@@ -74,3 +75,5 @@ exports.isAdmin = (req, res, next) => {
 		});
 	}
 };
+
+// module.exports = { auth, isUser, isAdmin };

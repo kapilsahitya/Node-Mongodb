@@ -1,12 +1,18 @@
-const path = require('path');
-const fs = require('fs-extra');
-const Category = require('../models/Category');
-const Product = require('../models/Product');
-const logger = require('../helpers/logger');
-const { validationResult } = require('express-validator');
-require('dotenv').config();
+// const path = require('path');
+// const fs = require('fs-extra');
+// const Category = require('../models/Category');
+// const Product = require('../models/Product');
+// const logger = require('../helpers/logger');
+// const { validationResult } = require('express-validator');
+import path from 'path';
+import fs from 'fs-extra';
+import { Category } from '../models/Category.js';
+import { Product } from '../models/Product.js';
+import logger from '../helpers/logger.js';
+import { validationResult } from 'express-validator';
+// require('dotenv').config();
 
-exports.add = async (req, res) => {
+export const add = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -46,8 +52,8 @@ exports.add = async (req, res) => {
 			categoryInstance.image !== '' &&
 			fs.existsSync(
 				__dirname +
-					'../../../uploads/category/' +
-					categoryInstance.image,
+				'../../../uploads/category/' +
+				categoryInstance.image,
 			)
 		) {
 			tmpCat.image_url =
@@ -80,8 +86,8 @@ exports.add = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-						'../../../uploads/product/game/' +
-						tmpPrd.game_path,
+					'../../../uploads/product/game/' +
+					tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -116,7 +122,7 @@ exports.add = async (req, res) => {
 	}
 };
 
-exports.edit = async (req, res) => {
+export const edit = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -229,8 +235,8 @@ exports.edit = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-						'../../../uploads/product/game/' +
-						tmpPrd.game_path,
+					'../../../uploads/product/game/' +
+					tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =
@@ -267,7 +273,7 @@ exports.edit = async (req, res) => {
 	}
 };
 
-exports.deleteCategory = async (req, res) => {
+export const deleteCategory = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -311,7 +317,7 @@ exports.deleteCategory = async (req, res) => {
 	}
 };
 
-exports.getAll = async (req, res) => {
+export const getAll = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -376,8 +382,8 @@ exports.getAll = async (req, res) => {
 					tmpPrd.game_path !== '' &&
 					fs.existsSync(
 						__dirname +
-							'/../../uploads/product/game/' +
-							tmpPrd.game_path,
+						'/../../uploads/product/game/' +
+						tmpPrd.game_path,
 					)
 				) {
 					tmpPrd.game_path_url =
@@ -410,7 +416,7 @@ exports.getAll = async (req, res) => {
 	}
 };
 
-exports.getById = async (req, res) => {
+export const getById = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -472,8 +478,8 @@ exports.getById = async (req, res) => {
 				tmpPrd.game_path !== '' &&
 				fs.existsSync(
 					__dirname +
-						'../../../uploads/product/game/' +
-						tmpPrd.game_path,
+					'../../../uploads/product/game/' +
+					tmpPrd.game_path,
 				)
 			) {
 				tmpPrd.game_path_url =

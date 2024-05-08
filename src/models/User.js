@@ -1,6 +1,8 @@
 const SALT_WORK_FACTOR = 10;
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt'
+// const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
 	first_name: { type: String, required: true, default: '', trim: true },
@@ -44,4 +46,5 @@ UserSchema.pre('save', function (next) {
 	});
 });
 
-module.exports = mongoose.model('User', UserSchema);
+// module.exports = mongoose.model('User', UserSchema);
+export const User = mongoose.model('User', UserSchema)

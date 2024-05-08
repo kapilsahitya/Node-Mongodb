@@ -8,7 +8,7 @@ const logger = require('../helpers/logger');
 require('dotenv').config();
 
 // signup handle
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -68,7 +68,7 @@ exports.signup = async (req, res) => {
 	}
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 
@@ -162,7 +162,7 @@ exports.login = async (req, res) => {
 };
 
 // It is GET method, you have to write like that
-exports.confirmation = async (req, res) => {
+export const confirmation = async (req, res) => {
 	try {
 		const errors = validationResult(req);
 

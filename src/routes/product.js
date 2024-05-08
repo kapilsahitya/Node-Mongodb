@@ -52,4 +52,5 @@ router.post(
 	gameUpload,
 );
 
-module.exports = router;
+// module.exports = router;
+export default router

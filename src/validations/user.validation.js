@@ -1,6 +1,10 @@
-const Models = require('../models');
-const { body, param } = require('express-validator');
-const singupRules = [
+// const Models = require('../models');
+// import Models from '../models';
+// import User from '../models/User';
+import { User } from '../models/User.js';
+// const { body, param } = require('express-validator');
+import {body, param} from 'express-validator';
+export const singupRules = [
 	body('first_name')
 		.exists({ checkFalsy: true })
 		.withMessage('First name is required')
@@ -16,7 +20,7 @@ const singupRules = [
 		.isEmail()
 		.withMessage('Provide valid email')
 		.custom(async (value) => {
-			const user = await Models['User'].findOne({ email: value });
+			const user = await User.findOne({ email: value });
 			if (user) {
 				throw new Error(
 					'A user already exists with this e-mail address',
@@ -47,7 +51,7 @@ const singupRules = [
 		.withMessage('phone number should be string'),
 ];
 
-const loginRules = [
+export const loginRules = [
 	body('email')
 		.exists({ checkFalsy: true })
 		.withMessage('Email is required')
@@ -58,7 +62,7 @@ const loginRules = [
 		.withMessage('Password is required'),
 ];
 
-const confirmationRules = [
+export const confirmationRules = [
 	param('email')
 		.exists({ checkFalsy: true })
 		.withMessage('Email is required')
@@ -68,4 +72,4 @@ const confirmationRules = [
 		.exists({ checkFalsy: true })
 		.withMessage('Token is required'),
 ];
-module.exports = { singupRules, loginRules, confirmationRules };
+// module.exports = { singupRules, loginRules, confirmationRules };

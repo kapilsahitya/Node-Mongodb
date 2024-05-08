@@ -1,21 +1,25 @@
-const AdminBro = require('admin-bro');
-const { buildRouter } = require('admin-bro-expressjs');
-const express = require('express');
+// const AdminBro = require('admin-bro');
+// const { buildRouter } = require('admin-bro-expressjs');
+// const express = require('express');
+import express from 'express'
 const router = express.Router();
-const {
-	singupRules,
-	loginRules,
-	confirmationRules,
-} = require('../validations/user.validation');
+// const {
+// 	singupRules,
+// 	loginRules,
+// 	confirmationRules,
+// } = require('../validations/user.validation');
+import { singupRules, loginRules, confirmationRules } from '../validations/user.validation.js';
 
-const buildAdminRouter = (admin) => {
-	const router = buildRouter(admin);
-	return router;
-};
+// const buildAdminRouter = (admin) => {
+// 	const router = buildRouter(admin);
+// 	return router;
+// };
 
 // Handlers from controllers
-const { login, signup, confirmation } = require('../controllers/user'); // API created using mongoose
-const { auth, isUser, isAdmin } = require('../middlewares/authMiddle');
+// const { login, signup, confirmation } = require('../controllers/user'); // API created using mongoose
+import { login, signup, confirmation } from '../controllers/user.js';
+import { auth, isUser, isAdmin } from '../middlewares/authMiddle.js';
+// const { auth, isUser, isAdmin } = require('../middlewares/authMiddle');
 
 router.post('/login', loginRules, login);
 router.post('/signup', singupRules, signup);
@@ -44,5 +48,6 @@ router.get('/admin', auth, isAdmin, (req, res) => {
 	});
 });
 
-module.exports = router;
+// module.exports = router;
 // module.exports = buildAdminRouter;
+export default router;
