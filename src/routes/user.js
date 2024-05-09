@@ -1,14 +1,18 @@
 // const AdminBro = require('admin-bro');
 // const { buildRouter } = require('admin-bro-expressjs');
 // const express = require('express');
-import express from 'express'
+import express from 'express';
 const router = express.Router();
 // const {
 // 	singupRules,
 // 	loginRules,
 // 	confirmationRules,
 // } = require('../validations/user.validation');
-import { singupRules, loginRules, confirmationRules } from '../validations/user.validation.js';
+import {
+	singupRules,
+	loginRules,
+	confirmationRules,
+} from '../validations/user.validation.js';
 
 // const buildAdminRouter = (admin) => {
 // 	const router = buildRouter(admin);

@@ -1,7 +1,7 @@
 // const multer = require('multer');
-import multer from 'multer'
+import multer from 'multer';
 // const path = require('node:path');
-import path from 'node:path'
+import path from 'node:path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file

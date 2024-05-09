@@ -3,7 +3,7 @@
 // import User from '../models/User';
 import { User } from '../models/User.js';
 // const { body, param } = require('express-validator');
-import {body, param} from 'express-validator';
+import { body, param } from 'express-validator';
 export const singupRules = [
 	body('first_name')
 		.exists({ checkFalsy: true })

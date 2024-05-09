@@ -1,5 +1,11 @@
-const multer = require('multer');
-const path = require('node:path');
+// const multer = require('multer');
+import multer from 'multer';
+// const path = require('node:path');
+import path from 'node:path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
 const storageConfig = multer.diskStorage({
 	// destinations is uploads folder
@@ -27,7 +33,7 @@ const fileFilterConfig = function (req, file, cb) {
 
 // creating multer object for storing
 // with configuration
-const product_image_upload = multer({
+export const product_image_upload = multer({
 	// applying storage and file filter
 	storage: storageConfig,
 	limits: {
@@ -37,4 +43,4 @@ const product_image_upload = multer({
 	fileFilter: fileFilterConfig,
 });
 
-module.exports = product_image_upload;
+// module.exports = product_image_upload;

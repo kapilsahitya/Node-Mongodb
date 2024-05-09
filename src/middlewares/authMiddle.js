@@ -1,5 +1,5 @@
 // const jwt = require('jsonwebtoken');
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 // require('dotenv').config();
 
 // auth, isUser, isAdmin
